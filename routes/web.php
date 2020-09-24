@@ -11,4 +11,14 @@
 |
 */
 
-Route::get('/', 'JogadoresController@index');
+Route::get('/', 'JogadoresController@index')->name('home');
+
+Route::post('salvarjogadores', 'JogadoresController@salvar');
+
+Route::post('geratime', 'JogadoresController@selecionaTime');
+
+Route::get('exclusao/{id}', 'JogadoresController@delete');
+
+Route::get('editando', 'JogadoresController@alterar');
+
+Route::get('recupera/{id}', 'JogadoresController@recover');
