@@ -8,3 +8,6 @@
 </p>
 
 Criação de um projeto onde é possível cadastrar jogadores, incluindo goleiros, e gerar dois times distintos. Onde é possível selecionar a quantidade de jogadores por time, e quais estão confirmados. Há um calculo também para que os times não fiquem desbalanceados. Futuras features poderão ser adicionadas para poder gerar mais que dois times
+
+
+Há uma tabela que será gerada com o php artisan migrate será gerada a tabela utilizada no projeto.
