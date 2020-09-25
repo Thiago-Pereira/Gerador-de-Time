@@ -19,6 +19,6 @@ Route::post('geratime', 'JogadoresController@selecionaTime');
 
 Route::get('exclusao/{id}', 'JogadoresController@delete');
 
-Route::get('editando', 'JogadoresController@alterar');
+Route::post('editando', 'JogadoresController@alterar');
 
 Route::get('recupera/{id}', 'JogadoresController@recover');

@@ -35,19 +35,89 @@ class JogadoresController extends Controller
     }
 
     public function selecionaTime(Request $req) {
-        dd($req->jogadores);
-        $jogadores = Jogadores::where('excluido', 0)->where('id_jogadores', $req->id)->orderby(rand())->get();
-
-        for ($i = 0; $i < $req->qtde/2; $i++) { 
-            $time1[] = $jogadores[i];
+        $aux = 0;
+        for ($a = 0; $a < count($req->id_jogadores); $a++) {
+            if ($req->goleiro[$a] == 1 && !empty($req->confirmado[$a])){
+                $aux++;
+            }
         }
+        if (count($req->confirmado) >= ($req->qtde * 2)  && $aux == 2) {
+            do {
+                $jogadores = array();
+                for ($key = 0; $key < count($req->id_jogadores); $key++) {
+                    if (!empty($req->confirmado[$key])) {
+                        $jogador = new Jogadores();
+                        $jogador->nome_jogadores = $req->nome_jogadores[$key];
+                        $jogador->habilidade = $req->habilidade[$key];
+                        $jogador->goleiro = $req->goleiro[$key];
+        
+                        array_push($jogadores, $jogador);
+                    }
+                }
+        
+                $tamanho = $req->qtde;
+                shuffle($jogadores);
+                
+                $goleiro = true;
+                $time1 = array();
+                $time2 = array();
+        
+                foreach($jogadores as $i => $jog) {
+                    if ($jog->goleiro == 1){
+                        $goleiro1 = $i;
+                        break;
+        
+                    }
+                }
+        
+                $time1[] = $jogadores[$goleiro1];
+                array_splice($jogadores, $goleiro1, 1);
+                for ($i = 0; $i < $tamanho/2; $i++) { 
+                    if($jogadores[$i]->goleiro == 0 && $goleiro == true ) {
+                        $time1[] = $jogadores[$i];
+                        // echo 'aqui';
+                        array_splice($jogadores, $i, 1);
+                    } 
+                }
+        
+        
+                foreach($jogadores as $i => $jog) {
+                    if ($jog->goleiro == 1){
+                        $goleiro2 = $i;
+                        break;
+        
+                    }
+                }
+                $time2[] = $jogadores[$goleiro2];
+                array_splice($jogadores, $goleiro2, 1);
+                
+        
+                for ($j = 0; $j < $tamanho/2 ; $j++) { 
+                    if($jogadores[$j]->goleiro == 0 && $goleiro == true ) {
+                        $time2[] = $jogadores[$j];
+                    }
+                }
+        
+                $media_time1 = array();
+                $media_time2 = array();
+                foreach ($time1 as $time) {
+                    $media_time1[] = $time->habilidade;
+                }
+                foreach ($time2 as $time) {
+                    $media_time2[] = $time->habilidade;
+                }
+        
+        
+                $m1 = array_sum($media_time1)/count($media_time1);
+                $m2 = array_sum($media_time2)/count($media_time2);
+                // dd('aqui');
+            } while($m1 <= 1.5 && $m1 >= 4.8 && $m2 <= 1.5 && $m2 >= 4.8);
+            // dd($time1);
+            return view('pages.times.index')->with(['time1' => $time1, 'time2' => $time2]);
 
-        for ($j = 0; $j < $req->qtde ; $j++) { 
-            $time2[] = $jogadores[i];
-            $i++;
-        }
-
-
+        } else {
+            return Redirect::back()->with('statusError', 'Número de jogadores confirmados insulficiente e/ou numéro de goleiros insulficiente');
+        } 
     }
 
     public function delete($id) {
@@ -66,7 +136,7 @@ class JogadoresController extends Controller
 
 
     public function alterar(Request $req) {
-        $jogador = Jogador::findOrFail($req->id_jogadores);
+        $jogador = Jogadores::findOrFail($req->id_jogadores);
         $jogador->nome_jogadores = $req->nome;
         $jogador->habilidade = $req->nivel;
         if (empty($req->goleiro)) {

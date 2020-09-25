@@ -13,7 +13,8 @@
                     {{ csrf_field() }}
                     @foreach ($jogadores as $jogador)
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="{{$jogador->nome_jogadores}}" name="nome" id="nome" required>
+                    <input type="hidden" name="id_jogadores" id="id_jogadores" value="{{$jogador->id_jogadores}}">
+                        <input type="text" class="form-control" placeholder="Nome*" name="nome" id="nome" value="{{$jogador->nome_jogadores}}" required> 
                     </div>
                     <div class="form-group">
                         <select name="nivel" id="nivel" class="form-control">

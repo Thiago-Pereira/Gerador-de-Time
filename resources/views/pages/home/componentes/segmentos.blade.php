@@ -1,6 +1,14 @@
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+@if (session('statusError'))
+  <script type="text/javascript">
+  swal("{{session('statusError')}}", "", "error");
+  </script>
+@endif
+
+
 <div class="container">
     <div class="row">
-        <div class="col-xl-12 text-center">
+        <div class="col-xl-12 text-center" style="padding-top: 10px;">
             <h2>Cadastre os jogadores abaixo</h2>
         </div>
         <div class="col-xl-12">
@@ -47,38 +55,53 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($jogadores as $jogador)
+                        @foreach ($jogadores as $key => $jogador)
                         <tr>
-                        <th scope="row">{{$jogador->id_jogadores}}</th>
-                        <td>{{$jogador->nome_jogadores}}</td>
-                        <td>{{$jogador->habilidade}}</td>
-                        <td>
-                            @if ($jogador->goleiro === 1)
-                            Sim
-                            @else
-                            Não
-                            @endif
-                        </td>
-                        <td>
-                            <input type="checkbox"  name="confirmado" id="confirmado" value=1>
-                            <label for="">Sim</label>
-                        </td>
+                            {{-- {{dd($key)}} --}}
+                            <div class="form-group">
+                            <input type="hidden" name="id_jogadores[{{$key}}]" id="id_jogadores[{{$key}}]" value="{{$jogador->id_jogadores}}">
+                                <th scope="row">{{$jogador->id_jogadores}}</th>
+                            </div>
+                            <div class="form-group">
+                            <input type="hidden" name="nome_jogadores[{{$key}}]" id="nome_jogadores[{{$key}}]" value="{{$jogador->nome_jogadores}}">
+                                <td>{{$jogador->nome_jogadores}}</td>
+                            </div>
+                            <div class="form-group">
+                                <input type="hidden" name="habilidade[{{$key}}]" id="habilidade[{{$key}}]" value="{{$jogador->habilidade}}">
+                                <td>{{$jogador->habilidade}}</td>
+                            </div>
+                            <div class="form-group">
+                                <input type="hidden" name="goleiro[{{$key}}]" id="goleiro[{{$key}}]" value="{{$jogador->goleiro}}">
+                                <td>
+                                    @if ($jogador->goleiro === 1)
+                                    Sim
+                                    @else
+                                    Não
+                                    @endif
+                                </td>
+                            </div>
+                            <div class="form-group">
+                                <td>
+                                    <input type="checkbox"  name="confirmado[{{$key}}]" id="confirmado[{{$key}}]" value=1>
+                                    <label for="">Sim</label>
+                                </td>
+                            </div>
                         <th>
                             <div class="row">
                                 @if ($jogador->excluido == 0)
-                                <div class="col-md-6" style="display: flex;justify-content: center;">
+                                <div class="col-md-4" style="display: flex;justify-content: center;">
                                 <a class="btn btn-danger status" style="color: white" href="{{url('exclusao', [$jogador->id_jogadores])}}">
                                         <i class="fa fa-times-circle"></i>
                                     </a>
                                 </div>
                                 @else
-                                <div class="col-md-6" style="display: flex;justify-content: center;">
+                                <div class="col-md-4" style="display: flex;justify-content: center;">
                                     <a class="btn btn-info status" href="{{url('exclusao', [$jogador->id_jogadores])}}">
                                         <i class="fas fa-trash-restore-alt" style="color: white;"></i>
                                     </a>
                                 </div>
                                 @endif
-                                <div class="col-sm-6">
+                                <div class="col-sm-4">
                                     <a href="{{url('recupera', [$jogador->id_jogadores])}}" class="btn btn-primary edit">
                                         <i class="fas fa-pen"></i>
                                     </a>
@@ -89,8 +112,31 @@
                         @endforeach
                     </tbody>
                 </table>
+            </div>
+            <div class="text-right col-xl-12">
+                <p style="margin-bottom: 0rem">Quantidade de Jogadores por Time</p>
+            </div>
+            <div class="form-group d-flex align-center justify-content-end col-xl-12">
+                <input type="number" min="2" name="qtde" id="qtde">
+            </div>
+            <div class="form-group d-flex align-center justify-content-end col-xl-12">
                 <button type="submit">Gerar Time</button>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
+
+
+
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+</style>
